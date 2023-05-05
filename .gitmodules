@@ -1,0 +1,7 @@
+[submodule "thirdparty/FreeRTOS-Kernel-SMP"]
+	path = thirdparty/FreeRTOS-Kernel-SMP
+	url = https://github.com/FreeRTOS/FreeRTOS-Kernel.git
+	branch = smp
+[submodule "thirdparty/minmea"]
+	path = thirdparty/minmea
+	url = https://github.com/kosma/minmea.git
