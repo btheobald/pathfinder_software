@@ -74,6 +74,6 @@
 
 void pathfinder_hw_setup(void);
 
-void nmea_process();
+void gps_decode();
 
 #endif // PATHFINDER_HEADER_GUARD

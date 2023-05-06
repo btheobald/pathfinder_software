@@ -18,14 +18,15 @@ void main(void)
 {
     tusb_cdc_wait();
  
-    printf("\n*******************\n");
-    printf(  "* PATHFINDER DEMO *\n");
-    printf("\n*******************\n\n");
-    
+    printf("\n\n*******************\n");
+    printf(    "* PATHFINDER DEMO *\n");
+    printf(    "*******************\n");
+
     pathfinder_hw_setup();
 
     while(1) {
-        
+        sleep_ms(1000);
+        gps_decode();
     }
     //vLaunch();
 } 

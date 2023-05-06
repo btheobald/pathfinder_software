@@ -1,4 +1,7 @@
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Dtimegm=mktime")
-set(minmea_SRCS minmea/minmea.c minmea/minmea.h)
-add_library(minmea ${minmea_SRCS})
+
+add_library(minmea minmea/minmea.c)
+
+target_include_directories(minmea PRIVATE ${CMAKE_CURRENT_LIST_DIR}/minmea)
+
 target_link_libraries(minmea)

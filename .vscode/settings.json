@@ -1,0 +1,20 @@
+{
+    "files.associations": {
+        "freertos.h": "c",
+        "portable.h": "c",
+        "portmacro.h": "c",
+        "stdlib.h": "c",
+        "pico.h": "c",
+        "task.h": "c",
+        "stdio.h": "c",
+        "multicore.h": "c",
+        "hooks.h": "c",
+        "tusb.h": "c",
+        "spi.h": "c",
+        "utility.h": "c",
+        "binary_info.h": "c",
+        "ms5637.h": "c",
+        "error.h": "c"
+    },
+    "cortex-debug.variableUseNaturalFormat": true
+}

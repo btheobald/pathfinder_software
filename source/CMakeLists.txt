@@ -2,7 +2,7 @@ add_executable(pathfinder
     boot.c
     pathfinder.c
     utility.c
-    hooks.c
+    #hooks.c
 )
 
 target_compile_definitions(pathfinder PRIVATE
@@ -13,6 +13,7 @@ target_compile_definitions(pathfinder PRIVATE
 target_include_directories(pathfinder PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/../include
         ${CMAKE_CURRENT_LIST_DIR}/../driver/ms5637/include
+        ${CMAKE_CURRENT_LIST_DIR}/../thirdparty/minmea
 )
 
 # Add pico_stdlib library which aggregates commonly used features
@@ -23,8 +24,8 @@ target_link_libraries(pathfinder    pico_stdlib
                                     hardware_pio 
                                     hardware_dma
                                     i2c_ms5637
-                                    FreeRTOS-Kernel
-                                    FreeRTOS-Kernel-Heap4
+                                   # FreeRTOS-Kernel
+                                   # FreeRTOS-Kernel-Heap4
                                     minmea)
 
 target_link_options(pathfinder PRIVATE -Xlinker --print-memory-usage)
