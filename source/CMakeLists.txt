@@ -13,6 +13,7 @@ target_compile_definitions(pathfinder PRIVATE
 target_include_directories(pathfinder PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/../include
         ${CMAKE_CURRENT_LIST_DIR}/../driver/ms5637/include
+        ${CMAKE_CURRENT_LIST_DIR}/../driver/st7735/include
         ${CMAKE_CURRENT_LIST_DIR}/../thirdparty/minmea
 )
 
@@ -24,6 +25,7 @@ target_link_libraries(pathfinder    pico_stdlib
                                     hardware_pio 
                                     hardware_dma
                                     i2c_ms5637
+                                    spi_st7735
                                    # FreeRTOS-Kernel
                                    # FreeRTOS-Kernel-Heap4
                                     minmea)

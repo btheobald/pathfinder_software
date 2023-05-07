@@ -1,1 +1,2 @@
 add_subdirectory(ms5637)
+add_subdirectory(st7735)

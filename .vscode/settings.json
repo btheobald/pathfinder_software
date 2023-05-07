@@ -14,7 +14,8 @@
         "utility.h": "c",
         "binary_info.h": "c",
         "ms5637.h": "c",
-        "error.h": "c"
+        "error.h": "c",
+        "st7735.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": true
 }
