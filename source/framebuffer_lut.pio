@@ -1,0 +1,8 @@
+; Adds parity to data that is to be written to SCSI
+; This works by generating addresses for DMA to fetch data from.
+; Register X should be initialized to the base address of the lookup table.
+.program scsi_parity
+    pull block
+    in NULL, 1
+    in OSR, 8
+    in X, 23
