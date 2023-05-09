@@ -4,6 +4,8 @@
 #include "ms5637.h"
 #include "st7735.h"
 
+#include "fb_dma_pio_lut.h"
+
 void vLaunch(void)
 {
     // Main App Launch
@@ -29,7 +31,14 @@ void main(void)
     st7735_init(&lcd0, LCD_SPI_PERIPHERAL, LCD_DC_GPIO);
     printf("Configure LCD - ST7735 - OK\n");
 
+    uint8_t fb[130*160] = {0};
+
+    setup_framebuffer(130, 160, fb);
+
     while(1) {
+        st7735_setup_fill(&lcd0);
+        trigger_framebuffer_dma();
+        
         sleep_ms(1000);
         //gps_decode();
     }
