@@ -380,9 +380,9 @@ void pathfinder_hw_setup(void)
     gpio_set_dir(PICO_DEFAULT_LED_PIN, 1);
     gpio_put(PICO_DEFAULT_LED_PIN, 1);
 
-    configure_spi();
+    configure_spi();    
     configure_i2c();
-    configure_gps();
+    //configure_gps();
 
     uint8_t str_start = 0;
     uint8_t str_end = 0;

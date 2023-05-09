@@ -1,7 +1,12 @@
+#include "fb_dma_pio_lut.h"
+
 #include <stdint.h>
 #include "hardware/pio.h"
 #include "hardware/dma.h"
+
 #include "pathfinder.h"
+
+#include "addr_lut.pio.h"
 
 #define FBLUT_DMA_CH_A 1
 #define FBLUT_DMA_CH_B 2
@@ -10,7 +15,7 @@
 #define FBLUT_PIO pio0
 #define FBLUT_PIO_SM 0
 
-uint8_t lcd_lut_8b[256] __attribute__((aligned(256), section(".scratch_x.parity"))) = {
+uint16_t lcd_lut_8b[256] __attribute__((aligned(256), section(".scratch_x.parity"))) = {
     0x0000, 0x2124, 0x4229, 0x634e, 0x8452, 0xa577, 0xce9b, 0xf7be, 0x62ea, 0x83ac, 0x9c6f, 0xad11, 0xbd74, 0xce16, 0xe6d8, 0xff9a, 
     0x5985, 0x71e7, 0x8a88, 0x9b09, 0xab6a, 0xd46d, 0xfd50, 0xfe6f, 0x0146, 0x01ca, 0x026b, 0x0b2f, 0x0371, 0x3474, 0x257a, 0x8ebf, 
     0x6165, 0x91a7, 0xb269, 0xcae9, 0xe3c8, 0xf4c9, 0xfdc9, 0xff49, 0x2969, 0x3a2d, 0x62f0, 0x7bb3, 0x8496, 0x959a, 0xc6bf, 0xc75f, 
@@ -30,6 +35,10 @@ uint8_t lcd_lut_8b[256] __attribute__((aligned(256), section(".scratch_x.parity"
 };
 
 static struct {
+    // LCD Framebuffer
+    uint16_t fb_len;
+    uint8_t *fb_ptr;
+
     // PIO configurations
     uint32_t pio_offset_fblut;
     pio_sm_config pio_cfg_fblut;
@@ -44,6 +53,19 @@ void framebuffer_pio_init() {
     // Claim PIO with SDK
     pio_sm_claim(FBLUT_PIO, FBLUT_PIO_SM);
 
+    // Load base address to state machine register X
+    uint32_t addrbase = (uint32_t)&lcd_lut_8b[0];
+    assert((addrbase & 0x1FF) == 0);
+
+    uint8_t offset = pio_add_program(FBLUT_PIO, &addr_lut_program);
+
+    pio_sm_config c = addr_lut_program_get_default_config(offset);
+    //sm_config_set_clkdiv(&c, 1);
+
+    pio_sm_init(FBLUT_PIO, FBLUT_PIO_SM, offset, &c);
+    pio_sm_put(FBLUT_PIO, FBLUT_PIO_SM, addrbase >> 9);
+    pio_sm_exec(FBLUT_PIO, FBLUT_PIO_SM, pio_encode_pull(false, false));
+    pio_sm_exec(FBLUT_PIO, FBLUT_PIO_SM, pio_encode_mov(pio_x, pio_osr));
 }
 
 void framebuffer_dma_init() {
@@ -78,4 +100,40 @@ void framebuffer_dma_init() {
     channel_config_set_dreq(&cfg, spi_get_dreq(LCD_SPI_PERIPHERAL, true));
     channel_config_set_chain_to(&cfg, FBLUT_DMA_CH_B);
     cfg_fb_lut.dmacfg_write_chC = cfg;
+
+    // Configure DMA B Immediately
+    dma_channel_configure(FBLUT_DMA_CH_B,
+        &cfg_fb_lut.dmacfg_write_chB,
+        &dma_hw->ch[FBLUT_DMA_CH_C].al3_read_addr_trig,
+        &FBLUT_PIO->rxf[FBLUT_PIO_SM],
+        1, true);
+
+    // Configure DMA C Immediately
+    dma_channel_configure(FBLUT_DMA_CH_C,
+        &cfg_fb_lut.dmacfg_write_chC,
+        &spi0_hw->dr,
+        NULL,
+        1, false);
+}
+
+void setup_framebuffer(uint16_t fb_x, uint16_t fb_y, uint8_t *ptr) {
+    cfg_fb_lut.fb_len = fb_x * fb_y;
+    cfg_fb_lut.fb_ptr = ptr;
+
+    framebuffer_pio_init();
+    framebuffer_dma_init();
+}
+
+void trigger_framebuffer_dma() {
+    // Enable LUT PIO State machine
+    pio_sm_set_enabled(FBLUT_PIO, FBLUT_PIO_SM, true);
+
+    // Start DMA from current buffer to parity generator
+    dma_channel_configure(FBLUT_DMA_CH_A,
+        &cfg_fb_lut.dmacfg_write_chA,
+        &FBLUT_PIO->txf[FBLUT_PIO_SM],
+        cfg_fb_lut.fb_ptr,
+        cfg_fb_lut.fb_len,
+        true
+    );
 }

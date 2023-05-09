@@ -84,8 +84,7 @@ typedef struct {
 
 void st7735_init (st7735_t * lcd, spi_inst_t * spi, uint8_t dc);
 void st7735_cmd_send (st7735_t * lcd, uint8_t * cmd);
-void st7735_data_8b_send (st7735_t * lcd, uint8_t * data);
-void st7735_data_16b_send (st7735_t * lcd, uint16_t * data);
-void st7735_draw_pixel (st7735_t * lcd, uint8_t x, uint8_t y, uint16_t color);
+void st7735_data_send (st7735_t * lcd, uint8_t * data, uint8_t len);
+void st7735_setup_fill(st7735_t * lcd);
 
 #endif

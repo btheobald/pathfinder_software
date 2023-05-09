@@ -2,6 +2,7 @@ add_executable(pathfinder
     boot.c
     pathfinder.c
     utility.c
+    fb_dma_pio_lut.c
     #hooks.c
 )
 
@@ -16,6 +17,8 @@ target_include_directories(pathfinder PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}/../driver/st7735/include
         ${CMAKE_CURRENT_LIST_DIR}/../thirdparty/minmea
 )
+
+pico_generate_pio_header(pathfinder ${CMAKE_CURRENT_LIST_DIR}/addr_lut.pio)
 
 # Add pico_stdlib library which aggregates commonly used features
 target_link_libraries(pathfinder    pico_stdlib 

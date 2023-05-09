@@ -15,7 +15,8 @@
         "binary_info.h": "c",
         "ms5637.h": "c",
         "error.h": "c",
-        "st7735.h": "c"
+        "st7735.h": "c",
+        "pio.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": true
 }
