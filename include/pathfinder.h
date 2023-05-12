@@ -76,4 +76,18 @@ void pathfinder_hw_setup(void);
 
 void gps_decode();
 
+// Use 4 Bit colour mode to half framebuffer size
+//#define LUT_4B
+
+#ifdef LUT_4B
+#define FB_ALIGN 16384
+#define FB_X_SCALE 2
+#else
+#define FB_ALIGN 32768
+#define FB_X_SCALE 1
+#endif
+
+#define YRES 130
+#define XRES 160
+
 #endif // PATHFINDER_HEADER_GUARD

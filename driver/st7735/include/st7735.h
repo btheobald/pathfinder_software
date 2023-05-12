@@ -65,16 +65,6 @@
 #define WHITE                 0xFFFF
 #define RED                   0xF000
 
-// AREA definition
-// -----------------------------------
-#define MAX_X                 161               // max columns / MV = 0 in MADCTL
-#define MAX_Y                 130               // max rows / MV = 0 in MADCTL
-#define SIZE_X                MAX_X - 1         // columns max counter
-#define SIZE_Y                MAX_Y - 1         // rows max counter
-#define CACHE_SIZE_MEM        (MAX_X * MAX_Y)   // whole pixels
-#define CHARS_COLS_LEN        5                 // number of columns for chars
-#define CHARS_ROWS_LEN        8                 // number of rows for chars
-
 typedef struct {
     spi_inst_t *spi_ref;  // SPI Reference Pointer
     uint8_t dc_gpio;
@@ -82,7 +72,7 @@ typedef struct {
     uint8_t backlight_gpio;
 } st7735_t;
 
-void st7735_init (st7735_t * lcd, spi_inst_t * spi, uint8_t dc);
+void st7735_init (st7735_t * lcd, spi_inst_t * spi, uint8_t dc, uint8_t xres, uint8_t yres);
 void st7735_cmd_send (st7735_t * lcd, uint8_t * cmd);
 void st7735_data_send (st7735_t * lcd, uint8_t * data, uint8_t len);
 void st7735_setup_fill(st7735_t * lcd);

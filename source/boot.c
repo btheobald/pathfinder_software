@@ -17,8 +17,9 @@ void vLaunch(void)
     }
 }
 
-void main(void)
-{
+uint8_t fb[(XRES*YRES)/FB_X_SCALE];// __attribute__((aligned(FB_ALIGN))) ;
+
+void main(void) {
     tusb_cdc_wait();
  
     printf("\n\n*******************\n");
@@ -28,19 +29,51 @@ void main(void)
     pathfinder_hw_setup();
 
     st7735_t lcd0;
-    st7735_init(&lcd0, LCD_SPI_PERIPHERAL, LCD_DC_GPIO);
+    st7735_init(&lcd0, LCD_SPI_PERIPHERAL, LCD_DC_GPIO, XRES, YRES);
     printf("Configure LCD - ST7735 - OK\n");
 
-    uint8_t fb[130*160] = {0};
+    setup_framebuffer(XRES, YRES, fb);
+    st7735_setup_fill(&lcd0);
+    trigger_framebuffer_dma();
 
-    setup_framebuffer(130, 160, fb);
+    uint16_t t = 0;
+    uint16_t gps = 0;
 
     while(1) {
         st7735_setup_fill(&lcd0);
         trigger_framebuffer_dma();
-        
-        sleep_ms(1000);
-        //gps_decode();
+
+        sleep_us(5000);
+
+        uint16_t p = 0;
+        uint8_t xb = 0;
+        uint8_t yb = 0;
+        uint8_t cb = 0;
+                
+        for(uint16_t p = 0; p < (YRES*XRES/FB_X_SCALE); p++) { 
+            
+
+            xb = (p % XRES)/8; 
+            yb = (p / XRES)/8;
+            cb = yb * (XRES/16) + xb;
+
+            #ifdef LUT_4B
+            fb[p] = (((x)/20) + ((y+t)/32)*4)%16;
+            fb[p] |= (((((x)/20) + ((y+t)/32)*4))%16 << 4);
+            #else
+            fb[p] = cb+t;
+            #endif
+        }
+
+        t++;
+
+        #ifdef ENABLE_GPS
+        gps+=30;
+        if(gps > 1000) {
+            gps_decode();
+            gps = 0;
+        }
+        #endif
     }
 
     //vLaunch();

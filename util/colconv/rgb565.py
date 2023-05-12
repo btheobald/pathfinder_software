@@ -1,5 +1,7 @@
+import sys
+
 # Open the input file
-with open('colours.hex', 'r') as f:
+with open(sys.argv[1], 'r') as f:
     lines = f.readlines()
 
 # Initialize counter

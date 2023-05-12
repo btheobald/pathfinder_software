@@ -7,10 +7,10 @@
         {
             "name": "Cortex Debug",
             "cwd": "${workspaceFolder}",
-            "executable": "build/source/pathfinder.elf",
+            "executable": "${command:cmake.launchTargetPath}",
             "request": "launch",
             "type": "cortex-debug",
-            "runToEntryPoint": "main",
+            //"runToEntryPoint": "main",
             "servertype": "openocd",
             "configFiles": [
                 "interface/jlink.cfg",

@@ -10,7 +10,6 @@
 
 #include "hardware/sync.h"
 
-
 #define KHz *1000
 #define MHz *1000000
 #define NMEA_MAX_LEN 82
@@ -366,7 +365,10 @@ void configure_spi(void) {
     gpio_set_function(LCD_MOSI_GPIO, GPIO_FUNC_SPI);
     gpio_set_function(LCD_CS_GPIO, GPIO_FUNC_SPI);
 
-    spi_init(LCD_SPI_PERIPHERAL, 1 MHz);
+    spi_init(LCD_SPI_PERIPHERAL, 62.5 MHz);
+    
+    // Default - 6.36ms per frame
+    spi_set_format(LCD_SPI_PERIPHERAL, 8, SPI_CPOL_1, SPI_CPHA_1, SPI_MSB_FIRST); // SPI MODE 3 - 5.36ms per Frame
 
     bi_decl(bi_3pins_with_func(LCD_SCLK_GPIO, LCD_MOSI_GPIO, LCD_CS_GPIO, GPIO_FUNC_SPI));
 
@@ -382,10 +384,12 @@ void pathfinder_hw_setup(void)
 
     configure_spi();    
     configure_i2c();
-    //configure_gps();
+
+    #ifdef ENABLE_GPS
+        configure_gps();
+    #endif
 
     uint8_t str_start = 0;
     uint8_t str_end = 0;
     char nmea_line[NMEA_MAX_LEN];
 }
-

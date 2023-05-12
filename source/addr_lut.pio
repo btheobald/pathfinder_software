@@ -1,8 +1,21 @@
-; Convert 8b colour into 16b colour for SPI transmit
-; This works by generating addresses for DMA to fetch data from.
+; Convert 8b colour into lookup table address with offset.
+; DMA will place generated address into DMA READ_ADDR register.
 ; Register X should be initialized to the base address of the lookup table.
-.program addr_lut
+.program addr_lut_8b
     pull block
     in NULL, 1
     in OSR, 8
     in X, 23
+
+; Adapted 
+.program addr_lut_4b
+    pull block
+    
+    shift4b:
+        in NULL, 1
+        in OSR, 4
+        in NULL, 4
+        in X, 23
+
+        out NULL, 4
+    jmp !osre shift4b

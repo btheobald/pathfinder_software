@@ -22,11 +22,12 @@ pico_generate_pio_header(pathfinder ${CMAKE_CURRENT_LIST_DIR}/addr_lut.pio)
 
 # Add pico_stdlib library which aggregates commonly used features
 target_link_libraries(pathfinder    pico_stdlib 
-                                    hardware_spi 
+                                    hardware_spi
                                     hardware_i2c 
                                     hardware_uart 
                                     hardware_pio 
                                     hardware_dma
+                                    pico_divider
                                     i2c_ms5637
                                     spi_st7735
                                    # FreeRTOS-Kernel
