@@ -1,9 +1,7 @@
 add_executable(pathfinder
     boot.c
-    pathfinder.c
-    utility.c
-    fb_dma_pio_lut.c
-    #hooks.c
+    hooks.c
+    xoroshiro64star.c
 )
 
 target_compile_definitions(pathfinder PRIVATE
@@ -12,27 +10,17 @@ target_compile_definitions(pathfinder PRIVATE
 )
 
 target_include_directories(pathfinder PRIVATE
-        ${CMAKE_CURRENT_LIST_DIR}/../include
-        ${CMAKE_CURRENT_LIST_DIR}/../driver/ms5637/include
-        ${CMAKE_CURRENT_LIST_DIR}/../driver/st7735/include
-        ${CMAKE_CURRENT_LIST_DIR}/../thirdparty/minmea
+    ${CMAKE_CURRENT_LIST_DIR}/../include
 )
 
-pico_generate_pio_header(pathfinder ${CMAKE_CURRENT_LIST_DIR}/addr_lut.pio)
-
 # Add pico_stdlib library which aggregates commonly used features
-target_link_libraries(pathfinder    pico_stdlib 
-                                    hardware_spi
-                                    hardware_i2c 
-                                    hardware_uart 
-                                    hardware_pio 
-                                    hardware_dma
-                                    pico_divider
-                                    i2c_ms5637
-                                    spi_st7735
-                                   # FreeRTOS-Kernel
-                                   # FreeRTOS-Kernel-Heap4
-                                    minmea)
+target_link_libraries(pathfinder    pathfinder_hal
+                                    pico_stdlib 
+                                    FreeRTOS-Kernel
+                                    FreeRTOS-Kernel-Heap4
+                                    hagl
+                                    hagl_hal
+)
 
 target_link_options(pathfinder PRIVATE -Xlinker --print-memory-usage)
 

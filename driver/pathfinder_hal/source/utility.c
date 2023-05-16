@@ -62,10 +62,3 @@ int bus_scan_app(void) {
 
     printf("Done.\n\n\r");
 }
-
-void tusb_cdc_wait() {
-    // Configure STDIO and delay for ACM to be ready.
-    stdio_init_all();
-    while (!tud_cdc_connected())
-        sleep_ms(100);
-}

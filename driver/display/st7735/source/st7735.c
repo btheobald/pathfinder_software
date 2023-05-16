@@ -7,7 +7,7 @@ const uint8_t st7735B_Init[] = {
     SLPOUT,   0,
     COLMOD,   1,  0x05,
     FRMCTR1,  3,  0x00, 0x06, 0x03,
-    MADCTL,   1,  0xE0,
+    MADCTL,   1,  0xC0,                     // 0xC0 - 0xE0
     DISSET5,  2,  0x15, 0x02,
     INVCTR,   1,  0x0,
     PWCTR1,   2,  0x02, 0x70,
@@ -30,8 +30,8 @@ const uint8_t st7735B_Init[] = {
 };
 
 uint8_t st7735B_Fill[] = {
-    CASET,  4,  0, 1, 0, 0,  
-    RASET,  4,  0, 1, 0, 0,
+    CASET,  4,  0, 1, 0, 130,  
+    RASET,  4,  0, 1, 0, 160,
     RAMWR,  0
 };
 
@@ -42,7 +42,7 @@ void exec_cmd_array(st7735_t * lcd, const uint8_t * cmdset, uint8_t size, uint8_
             st7735_data_send(lcd, (uint8_t *)&cmdset[cmd+2], cmdset[cmd+1]);  
             cmd+=cmdset[cmd+1];
         }
-        sleep_us(us_sleep);
+        if(us_sleep > 0) sleep_us(us_sleep);
     }
 }
 
@@ -54,8 +54,8 @@ void st7735_init (st7735_t * lcd, spi_inst_t * spi, uint8_t dc, uint8_t xres, ui
     gpio_set_dir(lcd->dc_gpio, 1);
     gpio_put(lcd->dc_gpio, 0); // Default - Command
 
-    st7735B_Fill[5] = xres;
-    st7735B_Fill[11] = yres;
+    //st7735B_Fill[5] = yres;
+    //st7735B_Fill[11] = xres;
 
     exec_cmd_array(lcd, st7735B_Init, sizeof(st7735B_Init), 100);
 }
@@ -72,7 +72,7 @@ void st7735_data_send (st7735_t * lcd, uint8_t * data, uint8_t len) {
 
 void st7735_setup_fill(st7735_t * lcd) {
     spi_set_format(lcd->spi_ref, 8, SPI_CPOL_1, SPI_CPHA_1, SPI_MSB_FIRST); // SPI MODE 3 - 5.36ms per Frame
-    exec_cmd_array(lcd, st7735B_Fill, sizeof(st7735B_Fill), 10);
+    exec_cmd_array(lcd, st7735B_Fill, sizeof(st7735B_Fill), 0);
     gpio_put(lcd->dc_gpio, 1); // Data burst will follow
     spi_set_format(lcd->spi_ref, 16, SPI_CPOL_1, SPI_CPHA_1, SPI_MSB_FIRST); // SPI MODE 3 - 5.36ms per Frame
 }

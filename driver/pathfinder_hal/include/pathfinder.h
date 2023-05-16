@@ -1,32 +1,33 @@
 #ifndef PATHFINDER_HEADER_GUARD
 #define PATHFINDER_HEADER_GUARD
 
-#include "hardware/gpio.h"
-#include "hardware/spi.h"
-#include "hardware/i2c.h"
-#include "hardware/uart.h"
-#include "hardware/pio.h"
-#include "hardware/dma.h"
+#include <stdio.h>
+#include <hardware/uart.h>
+#include <hardware/spi.h>
+#include <hardware/pio.h>
+#include <hardware/i2c.h>
+
+#include "utility.h"
+
+// Peripheral Allocation
+#define LCD_SPI_PERIPHERAL      spi0
+#define LCD_DMA_PIO_PERIPHERAL  pio0
+#define SDIO_PIO_PERIPHERAL     pio1
+#define GPS_UART_PERIPHERAL     uart0
+#define SENSOR_I2C_PERIPHERAL   i2c1
+#define LCD_OPT_I2C_PERIPHERAL  i2c0
 
 // GPIO Pin Allocation
-
 // PWR
 #define POWER_SHUTDOWN_GPIO 	26
-#define POWER_SHUTDOWN_MODE 	GPIO_OUT
 #define CHARGER_STATUS_GPIO     22
-#define CHARGER_STATUS_MODE 	GPIO_IN
 
 // Device Buttons
 #define POWER_BUTTON_GPIO       26
-#define POWER_BUTTON_MODE   	GPIO_IN
 #define DOWN_BUTTON_GPIO        27
-#define DOWN_BUTTON_MODE 		GPIO_IN
 #define LEFT_BUTTON_GPIO        1
-#define LEFT_BUTTON_MODE 		GPIO_IN
 #define SELECT_BUTTON_GPIO      0
-#define SELECT_BUTTON_MODE 	    GPIO_IN
 #define RIGHT_BUTTON_GPIO       28
-#define RIGHT_BUTTON_MODE 	    GPIO_IN
 
 // LCD
 #define LCD_SCLK_GPIO           2
@@ -49,9 +50,7 @@
 #define GPS_UART_TX             12
 #define GPS_UART_RX             13
 #define GPS_3DFIX_GPIO          14
-#define GPS_3DFIX_MODE 	        GPIO_IN
 #define GPS_1PPS_GPIO           15
-#define GPS_1PPS_MODE 	        GPIO_IN
 
 // I2C
 #define SENSOR_SDA_GPIO         6
@@ -60,34 +59,21 @@
 #define LCD_OPT_SDA_GPIO        16
 #define LCD_OPT_SCL_GPIO        17
 
-// Peripheral Allocation
-#define LCD_SPI_PERIPHERAL      spi0
-#define SDIO_PIO_PERIPHERAL     pio1
-#define GPS_UART_PERIPHERAL     uart0
-#define SENSOR_I2C_PERIPHERAL   i2c1
-#define LCD_OPT_I2C_PERIPHERAL  i2c0
-
-// I2C ADDRESS
 #define SENSOR_I2C_FXOS8700_ADDR    0x1E
 #define SENSOR_I2C_MAX17048_ADDR    0x36
 #define SENSOR_I2C_MS5637_ADDR      0x76
 
+// DMA Channel Allocation
+#define GPS_RX_DMA_CHANNEL  0
+#define FBLUT_DMA_CH_A 1
+#define FBLUT_DMA_CH_B 2
+#define FBLUT_DMA_CH_C 3
+#define HAGL_HAL_GDMA_CTRL 4
+#define HAGL_HAL_GDMA_DATA 5
+
 void pathfinder_hw_setup(void);
 
-void gps_decode();
-
-// Use 4 Bit colour mode to half framebuffer size
-//#define LUT_4B
-
-#ifdef LUT_4B
-#define FB_ALIGN 16384
-#define FB_X_SCALE 2
-#else
-#define FB_ALIGN 32768
-#define FB_X_SCALE 1
-#endif
-
-#define YRES 130
-#define XRES 160
+#define YRES 160
+#define XRES 130
 
 #endif // PATHFINDER_HEADER_GUARD

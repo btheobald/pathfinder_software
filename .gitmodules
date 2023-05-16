@@ -2,9 +2,6 @@
 	path = thirdparty/FreeRTOS-Kernel-SMP
 	url = https://github.com/FreeRTOS/FreeRTOS-Kernel.git
 	branch = smp
-[submodule "thirdparty/minmea"]
-	path = thirdparty/minmea
-	url = https://github.com/kosma/minmea.git
 [submodule "thirdparty/hagl"]
 	path = thirdparty/hagl
 	url = https://github.com/tuupola/hagl.git

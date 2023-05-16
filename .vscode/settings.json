@@ -17,7 +17,24 @@
         "error.h": "c",
         "st7735.h": "c",
         "pio.h": "c",
-        "addr_lut.pio.h": "c"
+        "addr_lut.pio.h": "c",
+        "gl.h": "c",
+        "fb_dma_pio_lut.h": "c",
+        "compare": "c",
+        "graphics.h": "c",
+        "pathfinder.h": "c",
+        "atomic": "c",
+        "condition_variable": "c",
+        "future": "c",
+        "*.ipp": "c",
+        "system_error": "c",
+        "*.tcc": "c",
+        "ostream": "c",
+        "bitmap.h": "c",
+        "hagl.h": "c",
+        "hagl_hal.h": "c",
+        "random": "c"
     },
-    "cortex-debug.variableUseNaturalFormat": true
+    "cortex-debug.variableUseNaturalFormat": true,
+    "cmake.configureOnOpen": false
 }
