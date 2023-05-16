@@ -64,7 +64,7 @@ static void hagl_hal_blit(void *self, int16_t x0, int16_t y0, hagl_bitmap_t *src
     current_dma_blk[src->height].len = 0;
     current_dma_blk[src->height].data = NULL;
     current_dma_blk[src->height].target = NULL;
-    current_dma_blk[src->height].trigger = gdma_data_config.ctrl;
+    current_dma_blk[src->height].trigger = 0;
 
     dma_channel_configure(
         HAGL_HAL_GDMA_CTRL,
