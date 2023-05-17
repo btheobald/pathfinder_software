@@ -14,7 +14,7 @@
 
 #include "xoroshiro64star.h"
 
-static uint8_t current_demo = 1;
+static uint8_t current_demo = 0;
 volatile bool fps_flag = false;
 volatile bool switch_flag = false;
 volatile bool flush_flag = true;
@@ -269,9 +269,9 @@ fill_triangle_demo()
 void
 rgb_demo()
 {
-    uint16_t red = hagl_color(display, 255, 0, 0);
-    uint16_t green = hagl_color(display, 0, 255, 0);
-    uint16_t blue = hagl_color(display, 0, 0, 255);
+    hagl_color_t red = 7;
+    hagl_color_t green = 56;
+    hagl_color_t blue = 192;
 
     int16_t x0 = 0;
     int16_t x1 = display->width / 3;
@@ -327,14 +327,6 @@ flush_timer_callback(struct repeating_timer *t)
     return true;
 }
 
-static inline uint8_t rgb323(uint8_t r, uint8_t g, uint8_t b)
-{
-    uint8_t r3 = ((r >> 4) & 0b00000110) | (r & 0b00000001);
-    uint8_t g3 = ((g >> 4) & 0b00000110) | (g & 0b00000001);
-    uint8_t b3 = ((b >> 4) & 0b00000110) | (b & 0b00000001);
-    return (r3 << 5) | (g3 << 2) | (b3);
-}
-
 void main(void) {  
     stdio_init_all();
     while (!tud_cdc_connected())
@@ -353,9 +345,9 @@ void main(void) {
     struct repeating_timer fps_timer;
     struct repeating_timer flush_timer;
 
-    hagl_color_t red = rgb323(0xff, 0x00, 0x00);
-    hagl_color_t green = rgb323(0x00, 0xff, 0x00);
-    hagl_color_t blue = rgb323(0x00, 0x00, 0xff);
+    hagl_color_t red = 8;
+    hagl_color_t green = 56;
+    hagl_color_t blue = 192;
 
     pathfinder_hw_setup();
 
@@ -369,7 +361,7 @@ void main(void) {
 
     add_repeating_timer_ms(10000, switch_timer_callback, NULL, &switch_timer);
     add_repeating_timer_ms(1000, fps_timer_callback, NULL, &fps_timer);
-    add_repeating_timer_ms(33, flush_timer_callback, NULL, &flush_timer);
+    add_repeating_timer_ms(100, flush_timer_callback, NULL, &flush_timer);
 
     void (*demo[20]) ();
 
