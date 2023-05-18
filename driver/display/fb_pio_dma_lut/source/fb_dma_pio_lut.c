@@ -123,4 +123,7 @@ void trigger_framebuffer_dma() {
         cfg_fb_lut.fb_len,
         true
     );
+
+    // VSYNC
+    //dma_channel_wait_for_finish_blocking(FBLUT_DMA_CH_A);
 }

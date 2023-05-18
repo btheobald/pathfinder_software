@@ -33,7 +33,8 @@
         "bitmap.h": "c",
         "hagl.h": "c",
         "hagl_hal.h": "c",
-        "random": "c"
+        "random": "c",
+        "source_location": "c"
     },
     "cortex-debug.variableUseNaturalFormat": true,
     "cmake.configureOnOpen": false

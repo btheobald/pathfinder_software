@@ -359,9 +359,9 @@ void main(void) {
 
     hagl_flush(display);
 
-    add_repeating_timer_ms(10000, switch_timer_callback, NULL, &switch_timer);
+    add_repeating_timer_ms(5000, switch_timer_callback, NULL, &switch_timer);
     add_repeating_timer_ms(1000, fps_timer_callback, NULL, &fps_timer);
-    add_repeating_timer_ms(100, flush_timer_callback, NULL, &flush_timer);
+    add_repeating_timer_ms(33, flush_timer_callback, NULL, &flush_timer);
 
     void (*demo[20]) ();
 
@@ -406,7 +406,7 @@ void main(void) {
         if (switch_flag) {
             switch_flag = 0;
 #ifdef HAGL_HAS_HAL_BACK_BUFFER
-            printf("[main] %d %s per second, %d fps, %d free heap\r\n", (uint32_t)aps.current, primitive[current_demo], (uint32_t)fps.current,  free_heap());
+            printf("%s, %d\n", primitive[current_demo], (uint32_t)aps.current);
 #else
             printf("[main] %d %s per second, %d free heap\r\n", (uint32_t)aps.current, primitive[current_demo], free_heap());
 #endif /* HAGL_HAS_HAL_BACK_BUFFER */
