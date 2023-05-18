@@ -15,6 +15,7 @@ uint8_t fb[(HAGL_DISPLAY_WIDTH*HAGL_DISPLAY_HEIGHT)/FB_X_SCALE] __attribute__((a
 static st7735_t lcd_handle;
 
 static dma_channel_config gdma_ctrl_config;
+static dma_channel_config gdma_data_config_rect;
 static dma_channel_config gdma_data_config_blit;
 static dma_channel_config gdma_data_config_hline;
 static dma_channel_config gdma_data_config_vline;
@@ -167,6 +168,41 @@ static void hagl_hal_hline_direct(void *self, int16_t x0, int16_t y0, uint16_t w
     );
 }
 
+static void hagl_hal_rectangle(void *self, int16_t x0, int16_t y0, int16_t width, int16_t height, hagl_color_t color) {  
+    if(dma_hw->ch[HAGL_HAL_GDMA_DATA].al2_write_addr_trig != 0)
+        while (!(dma_hw->intr & 1u << HAGL_HAL_GDMA_DATA))
+            tight_loop_contents();
+    dma_hw->ints0 = 1u << HAGL_HAL_GDMA_DATA;
+
+    gdma_colour_copy = color;
+
+    for(int line = 0; line < height; line++) {
+        current_dma_blk[line].data = &gdma_colour_copy;
+        current_dma_blk[line].target = &(fb[((line+y0)*(HAGL_DISPLAY_WIDTH))+x0]);
+    }
+
+    current_dma_blk[height].data = 0;
+    current_dma_blk[height].target = 0;
+
+    dma_channel_configure(
+        HAGL_HAL_GDMA_DATA,
+        &gdma_data_config_rect,
+        0,
+        0,
+        width,
+        false
+    );
+
+    dma_channel_configure(
+        HAGL_HAL_GDMA_CTRL,
+        &gdma_ctrl_config,
+        &dma_hw->ch[HAGL_HAL_GDMA_DATA].al2_read_addr,      // Initial write address
+        &current_dma_blk[0],                                // Initial read address
+        2,                                                  // Halt after each control block
+        true                                                // Start Now
+    );
+}
+
 void hagl_hal_init(hagl_backend_t *backend) {
     backend->width = HAGL_DISPLAY_WIDTH;
     backend->height = HAGL_DISPLAY_HEIGHT;
@@ -176,6 +212,7 @@ void hagl_hal_init(hagl_backend_t *backend) {
     backend->blit = hagl_hal_blit;
     backend->put_pixel = hagl_hal_put_pixel;
     backend->flush = hagl_hal_flush;
+    backend->rectangle = hagl_hal_rectangle;
 
     st7735_init(&lcd_handle, LCD_SPI_PERIPHERAL, LCD_DC_GPIO, HAGL_DISPLAY_WIDTH, HAGL_DISPLAY_HEIGHT);
     setup_framebuffer(HAGL_DISPLAY_WIDTH, HAGL_DISPLAY_HEIGHT, fb, LCD_SPI_PERIPHERAL);
@@ -212,6 +249,17 @@ void hagl_hal_init(hagl_backend_t *backend) {
     channel_config_set_read_increment(&gdma_data_config_hline, false);
     channel_config_set_write_increment(&gdma_data_config_hline, true);
     channel_config_set_irq_quiet(&gdma_data_config_hline, false);
+
+    gdma_data_config_rect = dma_channel_get_default_config(HAGL_HAL_GDMA_DATA);
+    channel_config_set_transfer_data_size(&gdma_data_config_rect, DMA_SIZE_8);
+    // Increment across destination column
+    channel_config_set_read_increment(&gdma_data_config_rect, false);
+    channel_config_set_write_increment(&gdma_data_config_rect, true);
+    // Raise the IRQ flag when 0 is written to a trigger register (end of chain):
+    channel_config_set_irq_quiet(&gdma_data_config_rect, true);
+    // Trigger ctrl_chan when data_chan completes
+    channel_config_set_chain_to(&gdma_data_config_rect, HAGL_HAL_GDMA_CTRL);
+
 
     dma_hw->ints0 = 0u << HAGL_HAL_GDMA_DATA;
 }

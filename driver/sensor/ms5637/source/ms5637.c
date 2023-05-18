@@ -42,7 +42,7 @@ ms5637_status_t ms5637_prom_crc(uint16_t *prom) {
     prom[0] = ((prom[0]) & 0x0FFF); // Mask away CRC4
     prom[7] = 0;
 
-    for(uint8_t cnt; cnt < (MS5637_COEFFICIENT_COUNT + 1) * 2; cnt++) {
+    for(uint8_t cnt = 0; cnt < (MS5637_COEFFICIENT_COUNT + 1) * 2; cnt++) {
         if(cnt % 2 == 1) 
             n_rem ^= (uint16_t) ((prom[cnt >> 1]) & 0x00FF);
         else
@@ -148,6 +148,7 @@ ms5637_status_t ms5637_read_adc(ms5637_t * ms5637_instance, uint32_t * raw_adc) 
     ret = ms5637_read(ms5637_instance->i2c_ref, MS5637_READ_ADC, MS5637_3B_ADC_RESULT, (uint8_t *)raw_adc);
     *raw_adc = __builtin_bswap32(*raw_adc) >> 8;
     //printf("ADC - %04X ", *raw_adc);
+    return ret;
 }
 
 //
