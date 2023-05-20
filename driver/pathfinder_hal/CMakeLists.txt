@@ -10,5 +10,6 @@ target_link_libraries(pathfinder_hal    pico_stdlib
                                         hardware_uart 
                                         hardware_pio 
                                         hardware_dma
+                                        hardware_pwm
 
 )

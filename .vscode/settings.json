@@ -35,7 +35,12 @@
         "hagl_hal.h": "c",
         "random": "c",
         "source_location": "c",
-        "font6x9.h": "c"
+        "font6x9.h": "c",
+        "ugui.h": "c",
+        "types.h": "c",
+        "menu_window.h": "c",
+        "font.h": "c",
+        "pwm.h": "c"
     },
     "cortex-debug.variableUseNaturalFormat": true,
     "cmake.configureOnOpen": false

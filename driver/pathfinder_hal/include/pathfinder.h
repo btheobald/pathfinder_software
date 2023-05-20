@@ -72,6 +72,7 @@
 #define HAGL_HAL_GDMA_DATA 5
 
 void pathfinder_hw_setup(void);
+void set_backlight(uint16_t level);
 
 #define YRES 160
 #define XRES 130

@@ -2,12 +2,28 @@
 #include "gps_d.h"
 #include "pico/binary_info.h"
 #include "pico/stdlib.h"
+#include "hardware/pwm.h"
 
 #define KHz *1000
 #define MHz *1000000
 
-void configure_i2c(void)
-{
+static uint32_t pwm_slice;
+
+void configure_pwm(void) {
+    //gpio_set_function(LCD_BL_GPIO, GPIO_FUNC_PWM);
+    uint slice_num = pwm_gpio_to_slice_num(PICO_DEFAULT_LED_PIN);
+    pwm_config config = pwm_get_default_config();
+    // Set divider, reduces counter clock to sysclock/this value
+    pwm_config_set_clkdiv(&config, 2.f);
+    // Load the configuration into our PWM slice, and set it running.
+    pwm_init(slice_num, &config, true);
+}
+
+void set_backlight(uint16_t level) {
+    pwm_set_gpio_level(LCD_BL_GPIO, level*level);
+}
+
+void configure_i2c(void) {
     printf("Configure I2C Peripheral:");
     
     gpio_set_function(SENSOR_SDA_GPIO, GPIO_FUNC_I2C);
@@ -44,13 +60,15 @@ void configure_spi(void) {
     printf("OK\n");
 }
 
-void pathfinder_hw_setup(void)
-{
+void pathfinder_hw_setup(void) {
     //set_sys_clock_khz(270000, true);
 
     gpio_init(PICO_DEFAULT_LED_PIN);
     gpio_set_dir(PICO_DEFAULT_LED_PIN, 1);
     gpio_put(PICO_DEFAULT_LED_PIN, 1);
+
+    configure_pwm();
+    set_backlight(0);
 
     configure_spi();    
     //configure_i2c();

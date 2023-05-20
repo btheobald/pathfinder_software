@@ -1,7 +1,6 @@
 add_executable(pathfinder
     boot.c
     #hooks.c
-    xoroshiro64star.c
 )
 
 target_compile_definitions(pathfinder PRIVATE

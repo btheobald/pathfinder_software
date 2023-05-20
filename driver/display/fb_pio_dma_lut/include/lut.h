@@ -32,10 +32,10 @@
 #define FBLUT_COLORS 256
 //#define FBLUT_8B_DUEL lut_duel
 //#define FBLUT_8B_SONIC lut_sonic
-//#define FBLUT_8B_ATARI lut_atari
+#define FBLUT_8B_ATARI lut_atari
 //#define FBLUT_8B_AURORA lut_aurora
-#define FBLUT_8B_UZEBOX lut_uzebox
-#define FB_USE_LUT FBLUT_8B_UZEBOX
+//#define FBLUT_8B_UZEBOX lut_uzebox
+#define FB_USE_LUT FBLUT_8B_ATARI
 #endif
 
 // 8-BIT Color Palletes
