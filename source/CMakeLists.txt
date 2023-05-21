@@ -1,6 +1,7 @@
 add_executable(pathfinder
     boot.c
     #hooks.c
+    xoroshiro64star.c
 )
 
 target_compile_definitions(pathfinder PRIVATE
@@ -28,3 +29,5 @@ pico_add_extra_outputs(pathfinder)
 
 pico_enable_stdio_usb(pathfinder 1)
 pico_enable_stdio_uart(pathfinder 0)
+
+#pico_set_binary_type(pathfinder no_flash)
