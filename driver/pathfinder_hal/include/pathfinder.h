@@ -7,8 +7,6 @@
 #include <hardware/pio.h>
 #include <hardware/i2c.h>
 
-#include "utility.h"
-
 // Peripheral Allocation
 #define LCD_SPI_PERIPHERAL      spi0
 #define LCD_DMA_PIO_PERIPHERAL  pio0

@@ -1,6 +1,7 @@
 add_executable(pathfinder
     boot.c
     #hooks.c
+    utility.c
 )
 
 target_compile_definitions(pathfinder PRIVATE

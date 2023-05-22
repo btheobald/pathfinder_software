@@ -39,8 +39,6 @@ void configure_i2c(void) {
     bi_decl(bi_2pins_with_func(SENSOR_SDA_GPIO, SENSOR_SCL_GPIO, GPIO_FUNC_I2C));
 
     printf("OK\n");
-
-    bus_scan_app();
 }
 
 void configure_spi(void) {
@@ -71,6 +69,6 @@ void pathfinder_hw_setup(void) {
     set_backlight(0);
 
     configure_spi();    
-    //configure_i2c();
+    configure_i2c();
     //configure_gps();
 }

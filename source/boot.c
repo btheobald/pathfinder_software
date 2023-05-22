@@ -12,6 +12,11 @@
 #include "font6x9.h"
 #include "font9x14.h"
 
+#include "utility.h"
+
+#define EMBEDDED_CLI_IMPL
+#include "embedded_cli.h"
+
 int seconds = 0;
 volatile bool flush_flag = true;
 volatile bool update_flag = false;
@@ -40,6 +45,18 @@ bool second_timer_callback(struct repeating_timer *t)
 }
 
 wchar_t print[30];
+
+void onCommand(EmbeddedCli *embeddedCli, CliCommand *command) {
+    printf("Received command: %s\r\n", command->name);
+    embeddedCliTokenizeArgs(command->args);
+    for (int i = 1; i <= embeddedCliGetTokenCount(command->args); ++i) {
+        printf("\t arg %d : %s", i, embeddedCliGetToken(command->args, i));
+    }
+}
+
+void writeChar(EmbeddedCli *embeddedCli, char c) {
+    putchar(c);
+}
 
 void main(void) {  
     gpio_set_function(LCD_BL_GPIO, GPIO_FUNC_PWM);
@@ -75,8 +92,27 @@ void main(void) {
     swprintf(print, sizeof(print), L"%s", pathfinder_str);
     hagl_put_text(display, print, (HAGL_DISPLAY_WIDTH/2)-45, (HAGL_DISPLAY_HEIGHT/2)-25, 0xff, IBM_MDA_9x14);
 
-    uint32_t bl = 0;
+    EmbeddedCliConfig *config = embeddedCliDefaultConfig();
+    config->maxBindingCount = 16;
+    EmbeddedCli *cli = embeddedCliNew(config);
+    cli->writeChar = writeChar;
+
+    CliCommandBinding i2c_scan_binding;
+    i2c_scan_binding.name = "i2c_scan";
+    i2c_scan_binding.help = "Scan I2C bus for attached devices.";
+    i2c_scan_binding.tokenizeArgs = false;
+    i2c_scan_binding.context = NULL;
+    i2c_scan_binding.binding = bus_scan_app;
+    embeddedCliAddBinding(cli, i2c_scan_binding);
+
+    uint8_t bl = 0;
+
     while (1) {
+        int c;
+        while((c = getchar_timeout_us(0)) > 0) {
+            embeddedCliReceiveChar(cli, c);
+        }
+
         if(seconds > 5 & !update_flag) {
             update_flag = true;
             hagl_clear(display);
@@ -88,7 +124,10 @@ void main(void) {
 
             if(seconds < 5) {
                 set_backlight(bl++);
+                hagl_draw_rectangle(display, 0, 80, bl, 85, bl);
             }
+            
+            embeddedCliProcess(cli);
         }
     }
 } 

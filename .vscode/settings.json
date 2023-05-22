@@ -40,7 +40,10 @@
         "types.h": "c",
         "menu_window.h": "c",
         "font.h": "c",
-        "pwm.h": "c"
+        "pwm.h": "c",
+        "array": "c",
+        "string": "c",
+        "string_view": "c"
     },
     "cortex-debug.variableUseNaturalFormat": true,
     "cmake.configureOnOpen": false
