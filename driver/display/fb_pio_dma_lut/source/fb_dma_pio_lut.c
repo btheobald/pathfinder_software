@@ -125,5 +125,5 @@ void trigger_framebuffer_dma() {
     );
 
     // VSYNC
-    //dma_channel_wait_for_finish_blocking(FBLUT_DMA_CH_A);
+    dma_channel_wait_for_finish_blocking(FBLUT_DMA_CH_A);
 }

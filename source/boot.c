@@ -14,8 +14,12 @@
 
 #include "utility.h"
 
+#include "rgb332.h"
+
 #define EMBEDDED_CLI_IMPL
 #include "embedded_cli.h"
+
+#include <mcufont.h>
 
 int seconds = 0;
 volatile bool flush_flag = true;
@@ -56,6 +60,42 @@ void onCommand(EmbeddedCli *embeddedCli, CliCommand *command) {
 
 void writeChar(EmbeddedCli *embeddedCli, char c) {
     putchar(c);
+}
+
+typedef struct {
+    uint8_t *buffer;
+    uint16_t width;
+    uint16_t height;
+    uint16_t y;
+    const struct mf_font_s *font;
+} state_t;
+
+bool count_lines(const char *line, uint16_t count, void *state)
+{
+    int *linecount = (int*)state;
+    (*linecount)++;
+    return true;
+}
+
+static void pixel_callback(int16_t x, int16_t y, uint8_t count, uint8_t alpha, void *state)
+{
+    uint8_t original = get_buffer()[y*HAGL_DISPLAY_WIDTH+x];
+    int16_t color;
+    uint8_t result;
+    if(original & 0x08) { // If current colour is high luminance
+        color = original - (alpha & 0x0F & original); // Subtract Alpha
+        result = (color < 0x00) ? 0x00 : color;
+    } else {
+        color = original + (alpha & 0x0F & ~original); // Add Alpha
+        result = (color > 0xFF) ? 0xFF : color;
+    }
+
+    hagl_draw_hline(display, x, y, count, result);  
+}
+
+static uint8_t char_callback(int16_t x0, int16_t y0, mf_char character, void *state)
+{
+    return mf_render_character(mf_find_font(mf_get_font_list()->font->short_name), x0, y0, character, &pixel_callback, state);
 }
 
 void main(void) {  
@@ -107,15 +147,24 @@ void main(void) {
 
     uint8_t bl = 0;
 
+    const struct mf_font_s * font = mf_find_font(mf_get_font_list()->font->short_name);
+    printf("Font Loaded: %s", mf_get_font_list()->font->short_name);
+
+    hagl_fill_rectangle(display, 30, 0, 60, 50, 0x0f);
+    hagl_fill_rectangle(display, 61, 0, 90, 50, 0xc9);
+    hagl_fill_rectangle(display, 91, 0, 120, 50, 0x32);
+
+    mf_render_aligned(
+            font,
+            0, 0,
+            MF_ALIGN_LEFT,
+            "PATHFINDER", 10,
+            &char_callback, NULL);
+
     while (1) {
         int c;
         while((c = getchar_timeout_us(0)) > 0) {
             embeddedCliReceiveChar(cli, c);
-        }
-
-        if(seconds > 5 & !update_flag) {
-            update_flag = true;
-            hagl_clear(display);
         }
 
         if (flush_flag) {
@@ -124,7 +173,6 @@ void main(void) {
 
             if(seconds < 5) {
                 set_backlight(bl++);
-                hagl_draw_rectangle(display, 0, 80, bl, 85, bl);
             }
             
             embeddedCliProcess(cli);

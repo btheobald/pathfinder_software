@@ -20,6 +20,7 @@ target_link_libraries(pathfinder    pathfinder_hal
                                     #FreeRTOS-Kernel-Heap4
                                     hagl
                                     hagl_hal
+                                    mcufont
 )
 
 target_link_options(pathfinder PRIVATE -Xlinker --print-memory-usage)

@@ -263,3 +263,7 @@ void hagl_hal_init(hagl_backend_t *backend) {
 
     dma_hw->ints0 = 0u << HAGL_HAL_GDMA_DATA;
 }
+
+uint8_t * get_buffer() {
+    return fb;
+}

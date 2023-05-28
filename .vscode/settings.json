@@ -43,7 +43,9 @@
         "pwm.h": "c",
         "array": "c",
         "string": "c",
-        "string_view": "c"
+        "string_view": "c",
+        "fonts.h": "c",
+        "functional": "c"
     },
     "cortex-debug.variableUseNaturalFormat": true,
     "cmake.configureOnOpen": false

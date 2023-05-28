@@ -35,6 +35,7 @@
 #define FBLUT_8B_ATARI lut_atari
 //#define FBLUT_8B_AURORA lut_aurora
 //#define FBLUT_8B_UZEBOX lut_uzebox
+//#define FBLUT_8B_RGBM lut_rgbm
 #define FB_USE_LUT FBLUT_8B_ATARI
 #endif
 
@@ -58,6 +59,10 @@ extern const uint16_t lut_aurora[256];
 
 #ifdef FBLUT_8B_UZEBOX
 extern const uint16_t lut_uzebox[256] __attribute__((aligned(FBLUT_COLORS*2), section(".scratch_x.lut")));
+#endif
+
+#ifdef FBLUT_8B_RGBM
+extern const uint16_t lut_rgbm[256] __attribute__((aligned(FBLUT_COLORS*2), section(".scratch_x.lut")));
 #endif
 
 // 4-BIT Color Palletes
