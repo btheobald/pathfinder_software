@@ -129,9 +129,6 @@ void main(void) {
     int16_t x0, y0, code;
     int8_t color;
 
-    swprintf(print, sizeof(print), L"%s", pathfinder_str);
-    hagl_put_text(display, print, (HAGL_DISPLAY_WIDTH/2)-45, (HAGL_DISPLAY_HEIGHT/2)-25, 0xff, IBM_MDA_9x14);
-
     EmbeddedCliConfig *config = embeddedCliDefaultConfig();
     config->maxBindingCount = 16;
     EmbeddedCli *cli = embeddedCliNew(config);
@@ -150,17 +147,6 @@ void main(void) {
     const struct mf_font_s * font = mf_find_font(mf_get_font_list()->font->short_name);
     printf("Font Loaded: %s", mf_get_font_list()->font->short_name);
 
-    hagl_fill_rectangle(display, 30, 0, 60, 50, 0x0f);
-    hagl_fill_rectangle(display, 61, 0, 90, 50, 0xc9);
-    hagl_fill_rectangle(display, 91, 0, 120, 50, 0x32);
-
-    mf_render_aligned(
-            font,
-            0, 0,
-            MF_ALIGN_LEFT,
-            "PATHFINDER", 10,
-            &char_callback, NULL);
-
     while (1) {
         int c;
         while((c = getchar_timeout_us(0)) > 0) {
@@ -169,14 +155,27 @@ void main(void) {
 
         if (flush_flag) {
             flush_flag = 0;
+            hagl_fill_rectangle(display, 0, 0, 170, 320*(bl/(float)255), bl+16);
+            
+            mf_render_aligned(
+            font,
+            (HAGL_DISPLAY_WIDTH/2), (HAGL_DISPLAY_HEIGHT/2),
+            MF_ALIGN_CENTER,
+            "PATHFINDER", 10,
+            &char_callback, NULL);
+            
             hagl_flush(display);
 
-            if(seconds < 5) {
+            hagl_clear(display);
+
+            if(bl < 255) {
                 set_backlight(bl++);
             }
             
             embeddedCliProcess(cli);
         }
+
+        
     }
 } 
 

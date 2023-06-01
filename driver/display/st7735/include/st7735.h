@@ -36,18 +36,22 @@
 #define MADCTL                0x36
 #define COLMOD                0x3A
 
-#define FRMCTR1               0xB1
-#define FRMCTR2               0xB2
-#define FRMCTR3               0xB3
+#define RGBCTRL               0xB1
+#define PORCTRL               0xB2
+#define FRMCTR1               0xB3
 #define INVCTR                0xB4
 #define DISSET5               0xB6
+#define GCTRL                 0xB7
+#define VCOMS                 0xBB
 
-#define PWCTR1                0xC0
-#define PWCTR2                0xC1
-#define PWCTR3                0xC2
-#define PWCTR4                0xC3
-#define PWCTR5                0xC4
-#define VMCTR1                0xC5
+#define LCMCTRL               0xC0
+#define IDSET                 0xC1
+#define VRHEN                 0xC2
+#define VRHS                  0xC3
+#define VCMOFSET              0xC5
+#define FRCTRL2               0xC6
+
+#define PWCTRL1               0xD0
 
 #define RDID1                 0xDA
 #define RDID2                 0xDB
@@ -72,7 +76,7 @@ typedef struct {
     uint8_t backlight_gpio;
 } st7735_t;
 
-void st7735_init (st7735_t * lcd, spi_inst_t * spi, uint8_t dc, uint8_t xres, uint8_t yres);
+void st7735_init (st7735_t * lcd, spi_inst_t * spi, uint8_t dc, uint16_t xres, uint16_t yres);
 void st7735_cmd_send (st7735_t * lcd, uint8_t * cmd);
 void st7735_data_send (st7735_t * lcd, uint8_t * data, uint8_t len);
 void st7735_setup_fill(st7735_t * lcd);
