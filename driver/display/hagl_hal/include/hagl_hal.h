@@ -2,7 +2,7 @@
 #include <hagl.h>
 #include <string.h>
 
-#include "st7735.h"
+#include "st7789.h"
 
 #define HAGL_HAS_HAL_BACK_BUFFER
 

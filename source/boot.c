@@ -101,8 +101,10 @@ static uint8_t char_callback(int16_t x0, int16_t y0, mf_char character, void *st
 void main(void) {  
     gpio_set_function(LCD_BL_GPIO, GPIO_FUNC_PWM);
 
+    gpio_set_pulls(SELECT_BUTTON_GPIO, true, false);
+
     stdio_init_all();
-    while (!tud_cdc_connected())
+    while (!tud_cdc_connected() && gpio_get(SELECT_BUTTON_GPIO))
         sleep_ms(100);
     
     printf("\n\n*******************\n");

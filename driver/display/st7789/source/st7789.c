@@ -1,4 +1,4 @@
-#include "st7735.h"
+#include "st7789.h"
 #include "pico/stdlib.h"
 
 /** @array Init command */
