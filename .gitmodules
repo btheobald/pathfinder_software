@@ -5,3 +5,10 @@
 [submodule "thirdparty/hagl"]
 	path = thirdparty/hagl
 	url = https://github.com/tuupola/hagl.git
+[submodule "thirdparty/rp2040_sdio"]
+	path = thirdparty/no-OS-FatFS-SD-SPI-RPi-Pico
+	url = https://github.com/carlk3/no-OS-FatFS-SD-SPI-RPi-Pico.git
+	branch = sdio
+[submodule "mcufont"]
+	path = thirdparty/mcufont
+	url = https://github.com/mcufont/mcufont.git
