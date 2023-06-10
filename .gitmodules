@@ -8,3 +8,7 @@
 [submodule "thirdparty/mcufont"]
 	path = thirdparty/mcufont
 	url = https://github.com/mcufont/mcufont.git
+[submodule "thirdparty/no-OS-FatFS-SD-SPI-RPi-Pico"]
+	path = thirdparty/no-OS-FatFS-SD-SPI-RPi-Pico
+	url = https://github.com/carlk3/no-OS-FatFS-SD-SPI-RPi-Pico.git
+	branch = sdio
