@@ -21,6 +21,13 @@
 
 #include <mcufont.h>
 
+#include "f_util.h"
+#include "ff.h"
+#include "hw_config.h"
+#include "diskio.h" /* Declarations of disk functions */
+
+static sd_card_t sd_card; 
+
 int seconds = 0;
 volatile bool flush_flag = true;
 volatile bool update_flag = false;
@@ -34,6 +41,41 @@ const char test_sensor_str[] = "Sensor Test";
 const char test_gps_str[] = "GPS Test";
 const char test_sdio_str[] = "SDIO Test";
 const char test_map_str[] = "Map Test";
+
+size_t sd_get_num() { return 1; }
+sd_card_t *sd_get_by_num(size_t num) {
+    return &sd_card;
+}
+
+size_t spi_get_num() { return 1; }
+spi_t *spi_get_by_num(size_t num) {
+    return NULL;
+}
+
+void test(sd_card_t *pSD) {
+    // See FatFs - Generic FAT Filesystem Module, "Application Interface",
+    // http://elm-chan.org/fsw/ff/00index_e.html
+    FRESULT fr = f_mount(&pSD->fatfs, pSD->pcName, 1);
+    if (FR_OK != fr) panic("f_mount error: %s (%d)\n", FRESULT_str(fr), fr);
+    fr = f_chdrive(pSD->pcName);
+    if (FR_OK != fr) panic("f_chdrive error: %s (%d)\n", FRESULT_str(fr), fr);
+
+    FIL fil;
+    const char *const filename = "testfile.txt";
+    fr = f_open(&fil, filename, FA_OPEN_APPEND | FA_WRITE);
+    if (FR_OK != fr && FR_EXIST != fr)
+        panic("f_open(%s) error: %s (%d)\n", filename, FRESULT_str(fr), fr);
+    if (f_printf(&fil, "Hello, world!\n") < 0) {
+        printf("f_printf failed\n");
+    }
+    fr = f_close(&fil);
+    if (FR_OK != fr) {
+        printf("f_close error: %s (%d)\n", FRESULT_str(fr), fr);
+    }
+
+    f_unmount(pSD->pcName);
+    printf("OK\n");
+}
 
 bool flush_timer_callback(struct repeating_timer *t)
 {
@@ -144,6 +186,18 @@ void main(void) {
     i2c_scan_binding.binding = bus_scan_app;
     embeddedCliAddBinding(cli, i2c_scan_binding);
 
+    printf("\tConfigure SD Card - ");
+
+    sd_card.pcName = "0:";  // Name used to mount device
+    sd_card.type = SD_IF_SDIO;
+    sd_card.sdio_if.CMD_gpio = 10;
+    sd_card.sdio_if.D0_gpio = 18;
+    sd_card.use_card_detect = false;
+    sd_card.sdio_if.SDIO_PIO = pio1;
+    sd_card.sdio_if.DMA_IRQ_num = DMA_IRQ_1;
+
+    test(&sd_card);
+
     uint8_t bl = 0;
 
     const struct mf_font_s * font = mf_find_font(mf_get_font_list()->font->short_name);
@@ -176,8 +230,6 @@ void main(void) {
             
             embeddedCliProcess(cli);
         }
-
-        
     }
 } 
 

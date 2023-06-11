@@ -21,6 +21,7 @@ target_link_libraries(pathfinder    pathfinder_hal
                                     hagl
                                     hagl_hal
                                     mcufont
+                                    FatFs_SPI
 )
 
 target_link_options(pathfinder PRIVATE -Xlinker --print-memory-usage)

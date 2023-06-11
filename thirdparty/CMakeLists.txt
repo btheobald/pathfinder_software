@@ -15,3 +15,5 @@ add_library(mcufont mcufont/decoder/mf_bwfont.c
 target_include_directories(mcufont PUBLIC   ${CMAKE_CURRENT_LIST_DIR}/mcufont/decoder
                                             ${CMAKE_CURRENT_LIST_DIR}/mcufont/fonts
 )
+
+add_subdirectory(no-OS-FatFS-SD-SPI-RPi-Pico/src)
