@@ -17,3 +17,6 @@ target_include_directories(mcufont PUBLIC   ${CMAKE_CURRENT_LIST_DIR}/mcufont/de
 )
 
 add_subdirectory(no-OS-FatFS-SD-SPI-RPi-Pico/src)
+
+add_subdirectory(fileio_posix)
+add_subdirectory(mapmini)

@@ -26,6 +26,8 @@
 #include "hw_config.h"
 #include "diskio.h" /* Declarations of disk functions */
 
+#include "map.h"
+
 static sd_card_t sd_card; 
 
 int seconds = 0;
@@ -202,6 +204,29 @@ void main(void) {
 
     const struct mf_font_s * font = mf_find_font(mf_get_font_list()->font->short_name);
     printf("Font Loaded: %s", mf_get_font_list()->font->short_name);
+
+    uint32_t x_in = 8044;
+    uint32_t y_in = 5108;
+    uint32_t z_in = 14;
+
+    float xo = 0;
+    float yo = 0;
+    float rot = 0;
+    int tile_size = 256;
+
+    subtile_q_maps st = get_st(xo,yo,tile_size);
+
+    uint32_t heap;
+    uint32_t heap_total = 0;
+
+    FRESULT fr = f_mount(&sd_card.fatfs, sd_card.pcName, 1);
+    if (FR_OK != fr) panic("f_mount error: %s (%d)\n", FRESULT_str(fr), fr);
+    fr = f_chdrive(sd_card.pcName);
+    if (FR_OK != fr) panic("f_chdrive error: %s (%d)\n", FRESULT_str(fr), fr);
+
+    heap = load_map("/scotland_roads.map", x_in,   y_in,   z_in, (int32_t)xo-tile_size, (int32_t)yo-tile_size, st.subtile_q[0], rot, tile_size);
+    heap_total += heap;
+    printf("%d ", heap);
 
     while (1) {
         int c;
