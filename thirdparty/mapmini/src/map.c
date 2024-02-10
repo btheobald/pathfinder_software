@@ -241,7 +241,7 @@ int load_map(char* filename, uint32_t x_in, uint32_t y_in, uint32_t z_in, int16_
     printf("Bounding Box:\n\r");
     printf("\t[0]:%7.3f\n\r\t[1]:%7.3f\n\r\t[2]:%7.3f\n\r\t[3]:%7.3f\n\r", (float)hdr.bounding_box[0]/1000000, (float)hdr.bounding_box[1]/1000000, (float)hdr.bounding_box[2]/1000000, (float)hdr.bounding_box[3]/1000000);
     hdr.tile_size = get_uint16(&fbh);
-    printf("Tile Size:\t%hhu\n\r", hdr.tile_size);
+    printf("Tile Size:\t%hu\n\r", hdr.tile_size);
 
     uint8_t str_len = get_uint8(&fbh);
     get_string(&fbh, hdr.projection,str_len);
@@ -296,13 +296,12 @@ int load_map(char* filename, uint32_t x_in, uint32_t y_in, uint32_t z_in, int16_
 
     for(int poi_id = 0; poi_id < hdr.n_poi_tags; poi_id++) {
         str_len = get_uint8(&fbh);
-        get_string(&fbh, hdr.poi_tag_names[poi_id], str_len);
-        printf("\t[%d]: %d : %s\n", poi_id, str_len, hdr.poi_tag_names[poi_id]);
+        get_string(&fbh, hdr.poi_tag_names[poi_id], str_len);        printf("\t[%d]: %d : %s\n", poi_id, str_len, hdr.poi_tag_names[poi_id]);
     }
 
     hdr.n_way_tags = get_uint16(&fbh);
 
-    printf("# of Way Tags:\t%d\n\r", hdr.n_way_tags);
+    printf("# of Way Tags:\t%hu\n\r", hdr.n_way_tags);
  
     for(int way_id = 0; way_id < hdr.n_way_tags; way_id++) {
         str_len = get_uint8(&fbh);
@@ -420,6 +419,7 @@ int load_map(char* filename, uint32_t x_in, uint32_t y_in, uint32_t z_in, int16_
           if(w > 0) w--; 
           ways_to_draw--;  
         }
+        //printf("ARENA: POINTER %d\n\r", a0.current);
     }
 
     printf("Ways to Draw: %d\n\r", ways_to_draw);
@@ -428,7 +428,6 @@ int load_map(char* filename, uint32_t x_in, uint32_t y_in, uint32_t z_in, int16_
         if(st & testway[w].subtile_bitmap)
             g_draw_way(&testway[w], 0, testway[w].tag_ids[0], xo+HAGL_DISPLAY_WIDTH/2, yo+DISPLAY_HEIGHT/2, rot, size);
     }*/
-
 
     printf("Size of Ways: %d\n\r", way_size);
     

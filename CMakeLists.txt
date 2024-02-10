@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 
+SET(ENV{PICO_SDK_PATH})
+SET(ENV{PICO_SDK_FETCH_FROM_GIT} TRUE)
 include(cmake/pico_sdk_import.cmake)
 
 SET(FREERTOS_KERNEL_PATH "${CMAKE_SOURCE_DIR}/thirdparty/FreeRTOS-Kernel-SMP" CACHE STRING "Kernel Path")

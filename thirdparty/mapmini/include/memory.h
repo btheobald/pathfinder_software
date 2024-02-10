@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 
-#define ARENA_DEFAULT_SIZE 32000
+#define ARENA_DEFAULT_SIZE 1024
 
 typedef struct {
     uint8_t *region;

@@ -224,8 +224,6 @@ void main(void) {
     fr = f_chdrive(sd_card.pcName);
     if (FR_OK != fr) panic("f_chdrive error: %s (%d)\n", FRESULT_str(fr), fr);
 
-    heap = load_map("/scotland_roads.map", x_in,   y_in,   z_in, (int32_t)xo-tile_size, (int32_t)yo-tile_size, st.subtile_q[0], rot, tile_size);
-    heap_total += heap;
     printf("%d ", heap);
 
     while (1) {

@@ -3,7 +3,6 @@
 int init_buffer(fb_handler * fbh, char * filename) {
     fbh->buffer_pos = 0;
     fbh->bytes_read = 0;
-    fbh->file_pos = 0;
 
     printf("Opening: %s\n\r", filename);
     f_open(&fbh->fil, filename, FA_READ);
@@ -29,5 +28,4 @@ uint16_t get_remaining_bytes(fb_handler * fbh) {
 void relative_reset_buffer(fb_handler * fbh, int16_t seek) {
     fbh->buffer_pos = 0;
     file_seek_rel(fbh, -seek);
-    load_buffer(fbh);
 }
